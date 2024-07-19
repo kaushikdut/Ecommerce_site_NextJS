@@ -1,0 +1,84 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Pagination from "../_components/pagination";
+import { api } from "~/trpc/react";
+
+interface Product {
+  id: number;
+  category: string;
+}
+
+function Main() {
+  const product = api.product.getProduct.useSuspenseQuery()[0];
+
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [currentPage, setcurrentPage] = useState(1);
+
+  const noOfPages: number[] = [...Array(Math.ceil(product?.length / 6))];
+  const selectedProduct = api.product.selectedProduct.useMutation({
+    onSuccess: (response) => console.log(response),
+
+    onError: (err) => console.log(err),
+  });
+
+  const handleCheckboxChange = (ele: Product) => {
+    const isSelected = selectedCategories.includes(ele.category);
+    setSelectedCategories(
+      isSelected
+        ? selectedCategories.filter((cat) => cat !== ele.category)
+        : [...selectedCategories, ele.category],
+    );
+  };
+
+  useEffect(() => {
+    const savedProducts = localStorage.getItem("products") || null;
+    if (savedProducts && savedProducts?.length > 0) {
+      setSelectedCategories(JSON.parse(savedProducts));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedCategories.length > 0) {
+      localStorage.setItem("products", JSON.stringify(selectedCategories));
+    }
+  }, [selectedCategories]);
+  return (
+    <div className="flex h-full w-full flex-col items-center gap-y-8 py-8">
+      <div className="flex h-auto w-[510px] flex-col items-center gap-y-7 rounded-3xl border border-black border-opacity-25 py-10">
+        <h1 className="text-3xl font-semibold">Please mark your interests!</h1>
+        <p className="text-sm font-medium">We will keep you notified</p>
+        <div className="flex w-[400px] flex-col gap-y-4">
+          <p className="text-lg font-medium">My saved Interests!</p>
+          <div className="flex select-none flex-col gap-y-5">
+            {product?.slice(currentPage * 6 - 6, currentPage * 6).map((ele) => {
+              return (
+                <div key={ele.id} className="flex items-center gap-x-2">
+                  <input
+                    type="checkbox"
+                    id={ele.category}
+                    checked={selectedCategories.includes(ele.category)}
+                    onChange={() => handleCheckboxChange(ele)}
+                    className="h-[24px] w-[24px] appearance-none rounded-sm bg-gray-300 accent-black checked:appearance-auto"
+                  />
+                  <label htmlFor={ele.category} className="text-sm font-medium">
+                    {ele.category}
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      {product?.length > 0 && (
+        <Pagination
+          noOfPages={noOfPages}
+          currentPage={currentPage}
+          setCurrentPage={setcurrentPage}
+        />
+      )}
+    </div>
+  );
+}
+
+export default Main;
