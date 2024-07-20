@@ -26,6 +26,13 @@ import { deserializeUser } from "../middleware/auth";
  * @see https://trpc.io/docs/server/context
  */
 
+export const createTRPCContext = async (opts: { headers: Headers }) => {
+  return {
+    db,
+    ...opts,
+  };
+};
+
 export const createContext = async () => deserializeUser();
 export type Context = Awaited<ReturnType<typeof createContext>>;
 
