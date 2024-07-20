@@ -40,8 +40,8 @@ const Logout = ({ name, user }: LogoutProps) => {
   const handleLogOut = () => {
     if (logOut) {
       logOut.mutate();
-      // @ts-ignore
-      updateDb.mutate(JSON.parse(storage));
+
+      updateDb.mutate(JSON.parse(storage ?? "Default value"));
     }
   };
   const handleMenu = () => {
