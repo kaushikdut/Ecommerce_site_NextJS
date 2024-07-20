@@ -17,7 +17,10 @@ function Main() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const noOfPages: number[] = [...Array(Math.ceil(product?.length / 6))];
+  const noOfPages: number[] = Array.from(
+    { length: Math.ceil((product?.length ?? 0) / 6) },
+    (_, index) => index + 1,
+  );
 
   const handleCheckboxChange = (ele: Product) => {
     const isSelected = selectedCategories.includes(ele.category);

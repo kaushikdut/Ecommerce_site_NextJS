@@ -4,7 +4,6 @@ import { db } from "../db";
 import bcrypt from "bcrypt";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { NextRequest } from "next/server";
 
 export const registerHandler = async ({
   input,
@@ -30,13 +29,7 @@ export const registerHandler = async ({
         user: userWithoutPassword,
       },
     };
-  } catch (err: any) {
-    if (err.code === "P2002") {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "Email already exists",
-      });
-    }
+  } catch (err) {
     throw err;
   }
 };
@@ -71,7 +64,7 @@ export const loginHandler = async ({ input }: { input: LoginUserInput }) => {
       status: "success",
       token,
     };
-  } catch (err: any) {
+  } catch (err) {
     throw err;
   }
 };
@@ -82,7 +75,7 @@ export const logoutHandler = async () => {
       maxAge: -1,
     });
     return { status: "success" };
-  } catch (err: any) {
+  } catch (err) {
     throw err;
   }
 };

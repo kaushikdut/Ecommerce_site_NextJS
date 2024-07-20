@@ -2,8 +2,6 @@
 import { redirect } from "next/navigation";
 import { createAsyncCaller } from "./root";
 
-import { deserializeUser } from "../middleware/auth";
-
 export const getAuthUser = async ({
   shouldRedirect = true,
 }: {
@@ -21,5 +19,3 @@ export const getAuthUser = async ({
       return null;
     });
 };
-
-// export const getAuthUser = deserializeUser();

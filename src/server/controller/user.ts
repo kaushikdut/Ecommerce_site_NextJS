@@ -14,10 +14,17 @@ export const getUserHandler = async ({ ctx }: { ctx: Context }) => {
         ctx,
       },
     };
-  } catch (err: any) {
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: err.message,
+      });
+    }
+    // Handle unexpected error types
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: err.message,
+      message: "An unexpected error occurred.",
     });
   }
 };

@@ -19,10 +19,10 @@ export const getProductHandler = () => {
 export const updateDB = async (input: string[]) => {
   if (input.length > 0) {
     await db.product.deleteMany();
-    for (let i = 0; i < input.length; i++) {
+    for (const item of input) {
       await db.product.create({
         data: {
-          category: JSON.stringify(input[i]),
+          category: JSON.stringify(item),
         },
       });
     }

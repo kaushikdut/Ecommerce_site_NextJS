@@ -22,8 +22,8 @@ export const deserializeUser = async () => {
     let decoded;
     try {
       decoded = jwt.verify(token, secret) as { sub: string };
-    } catch (verifyError: any) {
-      if (verifyError.name === "TokenExpiredError") {
+    } catch (verifyError) {
+      if (verifyError instanceof jwt.TokenExpiredError) {
         console.error("JWT has expired", verifyError);
         return notAuthenticated; // or handle differently, e.g., redirect to login
       }
@@ -46,10 +46,16 @@ export const deserializeUser = async () => {
     return {
       user: userWithoutPassword,
     };
-  } catch (err: any) {
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: err.message,
+      });
+    }
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: err.message,
+      message: "An unexpected error occurred.",
     });
   }
 };

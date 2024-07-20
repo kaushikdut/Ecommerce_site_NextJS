@@ -9,8 +9,8 @@ function Verify() {
   const [otp, setOtp] = useState<string[]>(new Array(8).fill(""));
   const inputRefs = useRef<HTMLInputElement>(null);
   const [activeOtpIndex, setActiveOtpIndex] = useState<number>(0);
-
-  const user = JSON.parse(localStorage.getItem("user") ?? "default value");
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
   const verifyCode = getCookie("code");
   const router = useRouter();
 
