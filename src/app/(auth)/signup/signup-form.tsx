@@ -1,9 +1,7 @@
 "use client";
-
-import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Bounce, toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import InputComponent from "~/app/_components/inputComponent";
 import { api } from "~/trpc/react";
 import "react-toastify/dist/ReactToastify.css";

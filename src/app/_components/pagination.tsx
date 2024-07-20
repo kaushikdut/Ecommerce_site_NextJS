@@ -6,8 +6,8 @@ import {
 } from "react-icons/tfi";
 
 interface PaginationProps {
-  noOfPages: Number[];
-  currentPage: any;
+  noOfPages: number[];
+  currentPage: number;
   setCurrentPage: any;
 }
 

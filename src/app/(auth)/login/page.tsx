@@ -16,7 +16,7 @@ function Login() {
         </div>
         <LoginForm />
         <div className="flex w-full justify-center gap-x-2 pt-6 text-sm font-medium">
-          <p className="text-gray-800">Don't have an Account?</p>
+          <p className="text-gray-800">Don&apos; t have an Account?</p>
           <p className="fontme cursor-pointer font-semibold tracking-wider text-black hover:underline">
             <Link href={"/signup"}>SIGN UP</Link>
           </p>

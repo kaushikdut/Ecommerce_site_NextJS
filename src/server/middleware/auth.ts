@@ -22,7 +22,7 @@ export const deserializeUser = async () => {
     let decoded;
     try {
       decoded = jwt.verify(token, secret) as { sub: string };
-    } catch (verifyError) {
+    } catch (verifyError: any) {
       if (verifyError.name === "TokenExpiredError") {
         console.error("JWT has expired", verifyError);
         return notAuthenticated; // or handle differently, e.g., redirect to login

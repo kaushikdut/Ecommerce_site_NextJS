@@ -1,30 +1,23 @@
 "use client";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import {
-  ChangeEvent,
-  FormEvent,
-  FormEventHandler,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { Bounce, toast, ToastContainer } from "react-toastify";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Verify() {
   const [otp, setOtp] = useState<string[]>(new Array(8).fill(""));
   const inputRefs = useRef<HTMLInputElement>(null);
   const [activeOtpIndex, setActiveOtpIndex] = useState<number>(0);
-  //@ts-ignore
-  const user = JSON.parse(localStorage.getItem("user"));
+
+  const user = JSON.parse(localStorage.getItem("user") ?? "default value");
   const verifyCode = getCookie("code");
   const router = useRouter();
 
   const handleChange = (
     { target }: React.ChangeEvent<HTMLInputElement>,
     i: number,
-  ): void => {
+  ) => {
     const { value } = target;
     if (isNaN(Number(value))) return;
 
