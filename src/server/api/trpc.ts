@@ -25,12 +25,6 @@ import { deserializeUser } from "../middleware/auth";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
-  return {
-    db,
-    ...opts,
-  };
-};
 
 export const createContext = async () => deserializeUser();
 export type Context = Awaited<ReturnType<typeof createContext>>;
@@ -42,19 +36,6 @@ export type Context = Awaited<ReturnType<typeof createContext>>;
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-// const t = initTRPC.context<typeof createTRPCContext>().create({
-//   transformer: superjson,
-//   errorFormatter({ shape, error }) {
-//     return {
-//       ...shape,
-//       data: {
-//         ...shape.data,
-//         zodError:
-//           error.cause instanceof ZodError ? error.cause.flatten() : null,
-//       },
-//     };
-//   },
-// });
 
 export const t = initTRPC.context<Context>().create({
   transformer: superjson,

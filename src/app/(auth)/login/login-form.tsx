@@ -6,6 +6,8 @@ import { useState } from "react";
 import InputComponent from "~/app/_components/inputComponent";
 import { api } from "~/trpc/react";
 import { setCookie } from "cookies-next";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -15,12 +17,34 @@ const LoginForm = () => {
 
   const router = useRouter();
 
+  const verify = api.user.code.useMutation({
+    onSuccess: (response) => {
+      const { code } = response;
+      console.log(response, code);
+      setCookie("code", code);
+    },
+    onError: (err) => console.log(err),
+  });
+
   const loginUser = api.auth.loginUser.useMutation({
     onSuccess: (response) => {
-      // router.push("/");
-      console.log(response);
       const { token } = response;
       setCookie("token", token);
+      verify.mutate();
+      toast.success("success!", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      setTimeout(() => {
+        toast.clearWaitingQueue();
+        router.push("/verify");
+      }, 4000);
     },
     onError: (err) => {
       console.log(err);
@@ -29,8 +53,8 @@ const LoginForm = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const { type, value } = e.target;
-    setFormData((prev) => ({ ...prev, [type]: value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSumbit = (e: React.ChangeEvent<HTMLFormElement>) => {

@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import Navbar from "./_components/navbar";
+import { HydrateClient } from "~/trpc/server";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -25,8 +26,10 @@ export default function RootLayout({
     <html lang="en" className={`${inter.className}`}>
       <body>
         <TRPCReactProvider>
-          <Navbar />
-          {children}
+          <HydrateClient>
+            <Navbar />
+            {children}
+          </HydrateClient>
         </TRPCReactProvider>
       </body>
     </html>

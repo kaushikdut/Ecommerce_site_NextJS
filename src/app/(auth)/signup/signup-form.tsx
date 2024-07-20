@@ -1,9 +1,12 @@
 "use client";
 
+import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 import InputComponent from "~/app/_components/inputComponent";
 import { api } from "~/trpc/react";
+import "react-toastify/dist/ReactToastify.css";
 
 function SignupForm() {
   const [formData, setFormData] = useState({
@@ -15,7 +18,23 @@ function SignupForm() {
 
   const signupUser = api.auth.registerUser.useMutation({
     onSuccess: (response) => {
-      router.push("/login");
+      toast.success("success!", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      const { user } = response.data;
+      localStorage.setItem("user", JSON.stringify(user));
+
+      setTimeout(() => {
+        toast.clearWaitingQueue();
+        router.push("/login");
+      }, 4000);
     },
     onError: (err) => {
       console.log(err);
@@ -26,7 +45,7 @@ function SignupForm() {
     e.preventDefault();
 
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name.toLowerCase()]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSumbit = (e: React.ChangeEvent<HTMLFormElement>) => {

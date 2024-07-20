@@ -18,7 +18,18 @@ export const deserializeUser = async () => {
       return notAuthenticated;
     }
     const secret = process.env.JWT_SECRET!;
-    const decoded = jwt.verify(token, secret) as { sub: string };
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, secret) as { sub: string };
+    } catch (verifyError) {
+      if (verifyError.name === "TokenExpiredError") {
+        console.error("JWT has expired", verifyError);
+        return notAuthenticated; // or handle differently, e.g., redirect to login
+      }
+      console.error("JWT verification failed", verifyError);
+      return notAuthenticated;
+    }
 
     if (!decoded) {
       return notAuthenticated;

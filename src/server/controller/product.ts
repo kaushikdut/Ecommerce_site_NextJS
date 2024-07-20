@@ -16,20 +16,21 @@ export const getProductHandler = () => {
   return newProducts;
 };
 
-export const createProduct = async (input: string) => {
-  const existingProduct = await db.product.findUnique({
-    where: { category: input },
-  });
-
-  if (!existingProduct && input) {
-    await db.product.create({
-      data: {
-        category: input,
-      },
-    });
-
-    return {
-      message: "successfully added",
-    };
+export const updateDB = async (input: string[]) => {
+  if (input.length > 0) {
+    await db.product.deleteMany();
+    for (let i = 0; i < input.length; i++) {
+      await db.product.create({
+        data: {
+          category: JSON.stringify(input[i]),
+        },
+      });
+    }
+    return { message: "Successfully added" };
   }
+};
+
+export const getDbProcducts = async () => {
+  const product = await db.product.findMany();
+  return product;
 };

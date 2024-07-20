@@ -1,10 +1,25 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
+import {
+  ChangeEvent,
+  FormEvent,
+  FormEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { Bounce, toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Verify() {
   const [otp, setOtp] = useState<string[]>(new Array(8).fill(""));
   const inputRefs = useRef<HTMLInputElement>(null);
   const [activeOtpIndex, setActiveOtpIndex] = useState<number>(0);
+  //@ts-ignore
+  const user = JSON.parse(localStorage.getItem("user"));
+  const verifyCode = getCookie("code");
+  const router = useRouter();
 
   const handleChange = (
     { target }: React.ChangeEvent<HTMLInputElement>,
@@ -35,8 +50,28 @@ function Verify() {
 
   useEffect(() => {
     inputRefs.current?.focus();
-    console.log(activeOtpIndex);
   }, [activeOtpIndex]);
+
+  const handleSumbit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const newOtp = otp.join("");
+    if (newOtp === verifyCode) {
+      toast.success("Verified!", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      deleteCookie("code");
+      setTimeout(() => router.push("/dashboard"), 3000);
+    }
+    toast.clearWaitingQueue();
+  };
 
   return (
     <div className="h-100% flex w-full items-start justify-center">
@@ -44,10 +79,14 @@ function Verify() {
         <h1 className="text-3xl font-semibold">Verify your email</h1>
         <div className="text-center">
           <p>Enter the 8 digit code you have received on </p>
-          <p className="text-sm font-semibold">swag***@gmail.com</p>
+          <p className="text-sm font-semibold">{user?.email}</p>
+          <p className="text-sm font-semibold">{verifyCode}</p>
         </div>
 
-        <div className="flex w-[410px] flex-col gap-y-3 px-3">
+        <form
+          className="flex w-[410px] flex-col gap-y-3 px-3"
+          onSubmit={handleSumbit}
+        >
           <p>Code</p>
           <div className="mb-10 flex h-full w-full justify-center gap-x-2">
             {otp?.map((code, i) => (
@@ -67,7 +106,7 @@ function Verify() {
           <button className="mb-5 h-14 rounded-md bg-black text-white hover:opacity-80">
             VERIFY
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );

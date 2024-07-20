@@ -32,7 +32,6 @@ import { createContext, createTRPCContext } from "~/server/api/trpc";
 //   });
 
 const handler = (req: NextRequest) => {
-  console.log(`incoming request ${req.url}`, "additional", req.body);
   return fetchRequestHandler({
     endpoint: "/api/trpc",
     req,

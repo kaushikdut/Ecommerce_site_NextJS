@@ -1,12 +1,17 @@
 import { faker } from "@faker-js/faker";
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { createProduct, getProductHandler } from "~/server/controller/product";
-import { string, z } from "zod";
+import {
+  getDbProcducts,
+  getProductHandler,
+  updateDB,
+} from "~/server/controller/product";
+import { array, string, z } from "zod";
 
 export const productRouter = createTRPCRouter({
   getProduct: publicProcedure.query(async () => getProductHandler()),
 
-  selectedProduct: publicProcedure
-    .input(string())
-    .mutation(async ({ input }) => createProduct(input)),
+  getDbProduct: publicProcedure.query(async () => getDbProcducts()),
+  updateDb: publicProcedure
+    .input(array(string()))
+    .mutation(async ({ input }) => updateDB(input)),
 });

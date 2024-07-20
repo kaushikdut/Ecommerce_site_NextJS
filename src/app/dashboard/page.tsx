@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Pagination from "../_components/pagination";
 import { api } from "~/trpc/react";
+import { getCookie } from "cookies-next";
+import { redirect } from "next/navigation";
 
 interface Product {
   id: number;
@@ -13,14 +15,9 @@ function Main() {
   const product = api.product.getProduct.useSuspenseQuery()[0];
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [currentPage, setcurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const noOfPages: number[] = [...Array(Math.ceil(product?.length / 6))];
-  const selectedProduct = api.product.selectedProduct.useMutation({
-    onSuccess: (response) => console.log(response),
-
-    onError: (err) => console.log(err),
-  });
 
   const handleCheckboxChange = (ele: Product) => {
     const isSelected = selectedCategories.includes(ele.category);
@@ -30,10 +27,16 @@ function Main() {
         : [...selectedCategories, ele.category],
     );
   };
+  useEffect(() => {
+    const token = getCookie("token");
+    if (!token) {
+      redirect("/login");
+    }
+  }, []);
 
   useEffect(() => {
-    const savedProducts = localStorage.getItem("products") || null;
-    if (savedProducts && savedProducts?.length > 0) {
+    const savedProducts = localStorage.getItem("products");
+    if (savedProducts && savedProducts.length > 0) {
       setSelectedCategories(JSON.parse(savedProducts));
     }
   }, []);
@@ -43,6 +46,7 @@ function Main() {
       localStorage.setItem("products", JSON.stringify(selectedCategories));
     }
   }, [selectedCategories]);
+
   return (
     <div className="flex h-full w-full flex-col items-center gap-y-8 py-8">
       <div className="flex h-auto w-[510px] flex-col items-center gap-y-7 rounded-3xl border border-black border-opacity-25 py-10">
@@ -51,22 +55,23 @@ function Main() {
         <div className="flex w-[400px] flex-col gap-y-4">
           <p className="text-lg font-medium">My saved Interests!</p>
           <div className="flex select-none flex-col gap-y-5">
-            {product?.slice(currentPage * 6 - 6, currentPage * 6).map((ele) => {
-              return (
-                <div key={ele.id} className="flex items-center gap-x-2">
-                  <input
-                    type="checkbox"
-                    id={ele.category}
-                    checked={selectedCategories.includes(ele.category)}
-                    onChange={() => handleCheckboxChange(ele)}
-                    className="h-[24px] w-[24px] appearance-none rounded-sm bg-gray-300 accent-black checked:appearance-auto"
-                  />
-                  <label htmlFor={ele.category} className="text-sm font-medium">
-                    {ele.category}
-                  </label>
-                </div>
-              );
-            })}
+            {product?.slice(currentPage * 6 - 6, currentPage * 6).map((ele) => (
+              <div key={ele.id} className="flex items-center gap-x-2">
+                <input
+                  type="checkbox"
+                  id={`category-${ele.id}`}
+                  checked={selectedCategories.includes(ele.category)}
+                  onChange={() => handleCheckboxChange(ele)}
+                  className="h-[24px] w-[24px] appearance-none rounded-sm bg-gray-300 accent-black checked:appearance-auto"
+                />
+                <label
+                  htmlFor={`category-${ele.id}`}
+                  className="text-sm font-medium"
+                >
+                  {ele.category}
+                </label>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -74,7 +79,7 @@ function Main() {
         <Pagination
           noOfPages={noOfPages}
           currentPage={currentPage}
-          setCurrentPage={setcurrentPage}
+          setCurrentPage={setCurrentPage}
         />
       )}
     </div>

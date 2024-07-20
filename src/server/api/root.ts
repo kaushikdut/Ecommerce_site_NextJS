@@ -1,4 +1,3 @@
-import { postRouter } from "~/server/api/routers/post";
 import {
   createCallerFactory,
   createContext,
@@ -8,8 +7,8 @@ import {
   t,
 } from "~/server/api/trpc";
 import authRouter from "./routers/auth";
-import { statusCheckRouter, userRouter } from "./routers/user";
-import { getUserHandler, test } from "../controller/user";
+import { userRouter } from "./routers/user";
+import { getUserHandler } from "../controller/user";
 import { createUserSchema } from "libs/user-schema";
 import { loginHandler, registerHandler } from "../controller/auth";
 import { productRouter } from "./routers/product";
@@ -21,7 +20,6 @@ import { productRouter } from "./routers/product";
  */
 export const appRouter = createTRPCRouter({
   auth: authRouter,
-  status: statusCheckRouter,
   user: userRouter,
   product: productRouter,
 });

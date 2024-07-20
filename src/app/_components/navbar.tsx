@@ -1,20 +1,29 @@
 import { CiSearch } from "react-icons/ci";
 import { LiaAngleLeftSolid, LiaAngleRightSolid } from "react-icons/lia";
 import { PiShoppingCartSimple } from "react-icons/pi";
+import { getAuthUser } from "~/server/api/getAuthUser";
+import Logout from "./logout";
 
-function Navbar() {
+const Navbar = async () => {
+  const user = await getAuthUser({ shouldRedirect: false });
+
   return (
     <div className="flex h-36 w-full flex-col">
-      <div className="flex h-[40%] w-full items-center justify-end gap-x-4 px-5 text-xs font-medium text-gray-700">
+      <div className="relative flex h-[40%] w-full items-center justify-end gap-x-4 px-5 text-xs font-medium text-gray-700">
         <p>Help</p>
         <p>Order & Returns</p>
-        <p>Hi, John</p>
+        <Logout name={user?.name} user={user} />
       </div>
       <div className="flex h-full w-full items-center justify-between px-6">
         <div>
-          <h1 className="text-lg font-bold md:text-2xl">ECOMMERCE</h1>
+          <h1
+            className="cursor-pointer select-none text-lg font-bold md:text-2xl"
+            role="button"
+          >
+            ECOMMERCE
+          </h1>
         </div>
-        <div className="flex gap-x-4 text-xs font-semibold md:text-lg">
+        <div className="flex cursor-pointer gap-x-4 text-xs font-semibold md:text-lg">
           <h3>Categories</h3>
           <h3>Sale</h3>
           <h3>Clearance</h3>
@@ -35,6 +44,6 @@ function Navbar() {
       </div>
     </div>
   );
-}
+};
 
 export default Navbar;

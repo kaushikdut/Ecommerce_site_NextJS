@@ -24,7 +24,7 @@ function InputComponent({ name, onChange, type, value }: InputComponent) {
       <p className="text-sm font-medium">{name}</p>
       <input
         className="h-10 w-full rounded-md border border-gray-400 border-opacity-70 px-3 outline-none"
-        name={name}
+        name={name.toLowerCase()}
         placeholder="Enter"
         onChange={onChange}
         type={inputType}
@@ -32,7 +32,7 @@ function InputComponent({ name, onChange, type, value }: InputComponent) {
       />
       {type === "password" && (
         <span
-          className="absolute bottom-2 right-3 cursor-pointer underline"
+          className="absolute bottom-2 right-3 cursor-pointer select-none underline"
           onClick={() => setShowPassword((prev) => !prev)}
         >
           Show
