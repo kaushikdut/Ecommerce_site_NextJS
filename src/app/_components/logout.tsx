@@ -43,7 +43,7 @@ const Logout = ({ name, user }: LogoutProps) => {
       let parsedProducts: string[] = [];
       if (storage) {
         try {
-          const parsed = JSON.parse(storage);
+          const parsed: unknown = JSON.parse(storage);
           if (
             Array.isArray(parsed) &&
             parsed.every((item) => typeof item === "string")

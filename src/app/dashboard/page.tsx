@@ -42,7 +42,7 @@ function Main() {
 
     if (savedProducts && savedProducts.length > 0) {
       try {
-        const parsedProducts = JSON.parse(savedProducts);
+        const parsedProducts: unknown = JSON.parse(savedProducts);
 
         if (
           Array.isArray(parsedProducts) &&
