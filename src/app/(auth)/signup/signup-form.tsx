@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import InputComponent from "~/app/_components/inputComponent";
 import { api } from "~/trpc/react";
 import "react-toastify/dist/ReactToastify.css";
+import { setCookie } from "cookies-next";
 
 function SignupForm() {
   const [formData, setFormData] = useState({
@@ -26,8 +27,8 @@ function SignupForm() {
         progress: undefined,
         theme: "dark",
       });
-      const { user } = response.data;
-      localStorage.setItem("user", JSON.stringify(user));
+      const { email } = response.data.user;
+      setCookie("email", JSON.stringify(email));
 
       setTimeout(() => {
         toast.clearWaitingQueue();

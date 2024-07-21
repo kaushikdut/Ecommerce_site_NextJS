@@ -2,6 +2,14 @@
 import { redirect } from "next/navigation";
 import { createAsyncCaller } from "./root";
 
+interface UnauthorizedError extends Error {
+  code: string;
+}
+
+function isUnauthorizedError(error: unknown): error is UnauthorizedError {
+  return typeof error === "object" && error !== null && "code" in error;
+}
+
 export const getAuthUser = async ({
   shouldRedirect = true,
 }: {
@@ -12,7 +20,11 @@ export const getAuthUser = async ({
     .getUser(undefined)
     .then((result) => result.data.user)
     .catch((e) => {
-      if (e.code === "UNAUTHORIZED" && shouldRedirect) {
+      if (
+        isUnauthorizedError(e) &&
+        e.code === "UNAUTHORIZED" &&
+        shouldRedirect
+      ) {
         redirect("/login");
       }
 

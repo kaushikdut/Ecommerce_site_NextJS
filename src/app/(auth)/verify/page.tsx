@@ -9,8 +9,7 @@ function Verify() {
   const [otp, setOtp] = useState<string[]>(new Array(8).fill(""));
   const inputRefs = useRef<HTMLInputElement>(null);
   const [activeOtpIndex, setActiveOtpIndex] = useState<number>(0);
-  const userString = localStorage.getItem("user");
-  const user = userString ? JSON.parse(userString) : null;
+  const email = getCookie("email");
   const verifyCode = getCookie("code");
   const router = useRouter();
 
@@ -72,7 +71,7 @@ function Verify() {
         <h1 className="text-3xl font-semibold">Verify your email</h1>
         <div className="text-center">
           <p>Enter the 8 digit code you have received on </p>
-          <p className="text-sm font-semibold">{user?.email}</p>
+          <p className="text-sm font-semibold">{email}</p>
           <p className="text-sm font-semibold">{verifyCode}</p>
         </div>
 

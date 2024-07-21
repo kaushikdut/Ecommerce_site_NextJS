@@ -8,7 +8,7 @@ import {
 interface PaginationProps {
   noOfPages: number[];
   currentPage: number;
-  setCurrentPage: any;
+  setCurrentPage: (page: number) => void;
 }
 
 function Pagination({

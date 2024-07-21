@@ -39,8 +39,22 @@ function Main() {
 
   useEffect(() => {
     const savedProducts = localStorage.getItem("products");
+
     if (savedProducts && savedProducts.length > 0) {
-      setSelectedCategories(JSON.parse(savedProducts));
+      try {
+        const parsedProducts = JSON.parse(savedProducts);
+
+        if (
+          Array.isArray(parsedProducts) &&
+          parsedProducts.every((item) => typeof item === "string")
+        ) {
+          setSelectedCategories(parsedProducts);
+        } else {
+          console.warn("Parsed products are not of type string[]");
+        }
+      } catch (error) {
+        console.error("Failed to parse saved products:", error);
+      }
     }
   }, []);
 
